@@ -1,3 +1,23 @@
 spring:
   application:
     name: hitl
+  
+  datasource:
+    # Supabase provides this JDBC URL in settings under Project Settings -> Database -> Connection String
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://db.qwqpnekwdpjlirxcpecx.supabase.co:5432/postgres?sslmode=require}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:botadmin2026}
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate # Validates the schema against JPA entities (ensures tables match reviews/review_dialogues)
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        # Required if using PostgreSQL JSONB with Hypersistence Utils
+        jdbc:
+          lob:
+            non_contextual_creation: true

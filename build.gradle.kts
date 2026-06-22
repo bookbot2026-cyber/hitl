@@ -30,6 +30,10 @@ dependencies {
 	testCompileOnly("org.projectlombok:lombok")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testAnnotationProcessor("org.projectlombok:lombok")
+
+	// Core Flyway and PostgreSQL support extension
+    implementation("org.flywaydb:flyway-core:10.10.0")
+    implementation("org.flywaydb:flyway-database-postgresql:10.10.0")
 }
 
 tasks.withType<Test> {
