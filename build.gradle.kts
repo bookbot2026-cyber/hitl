@@ -34,6 +34,8 @@ dependencies {
 	// Core Flyway and PostgreSQL support extension
     implementation("org.flywaydb:flyway-core:10.10.0")
     implementation("org.flywaydb:flyway-database-postgresql:10.10.0")
+
+	implementation("io.hypersistence:hypersistence-utils-hibernate-71:3.15.3")
 }
 
 tasks.withType<Test> {

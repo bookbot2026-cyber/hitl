@@ -1,0 +1,19 @@
+package com.bookbot.hitl.models;
+import com.bookbot.hitl.entities.MediaType;
+import com.bookbot.hitl.entities.TransactionType;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+public record DraftPayload(
+        LocalDate transactionDate,
+        TransactionType type,
+        String category,
+        BigDecimal amount,
+        String person,
+        List<TransactionSplit> splits,
+        double confidenceScore,
+        String clarificationQuestion,
+        String mediaUrl,
+        MediaType mediaType,
+        String rawOcrOrTranscript
+) {}
