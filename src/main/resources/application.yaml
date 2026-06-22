@@ -3,9 +3,9 @@ spring:
     name: hitl
   
   datasource:
-    # Supabase provides this JDBC URL in settings under Project Settings -> Database -> Connection String
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://db.qwqpnekwdpjlirxcpecx.supabase.co:5432/postgres?sslmode=require}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    # Supabase provides this pooler JDBC URL in settings (if port 5432 fails, try 6543 which is transaction pooler)
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://aws-1-ap-northeast-1.pooler.supabase.com:5432/postgres?sslmode=require}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres.qwqpnekwdpjlirxcpecx}
     password: ${SPRING_DATASOURCE_PASSWORD:botadmin2026}
     driver-class-name: org.postgresql.Driver
   
