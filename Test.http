@@ -1,0 +1,61 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+### 1. Ingest a Mock Draft Transaction into Kafka
+POST http://localhost:8080/api/test/kafka/publish
+Content-Type: application/json
+
+{
+  "transactionDate": "2026-06-20",
+  "type": "EXPENSE",
+  "category": "Food & Dining",
+  "amount": 2450.00,
+  "person": "Social Restaurant",
+  "splits": [
+    { "person": "Self", "amount": 1225.00 },
+    { "person": "Sameer", "amount": 1225.00 }
+  ],
+  "mediaUrl": "https://example.com/receipt.png",
+  "mediaType": "IMAGE",
+  "rawOcrOrTranscript": "Dinner split 50/50 with Sameer"
+}
+
+###
+
+### 2. Fetch Active Reviews in the Queue
+GET http://localhost:8080/api/reviews
+
+###
+
+### 3. Update Review Fields Manually
+# Replace {id} with the UUID of the review from the previous GET request
+PUT http://localhost:8080/api/reviews/{id}
+Content-Type: application/json
+
+{
+  "transactionDate": "2026-06-20",
+  "type": "EXPENSE",
+  "category": "Food & Dining",
+  "amount": 2500.00,
+  "person": "Social Restaurant (Adjusted)",
+  "splits": [
+    { "person": "Self", "amount": 1250.00 },
+    { "person": "Sameer", "amount": 1250.00 }
+  ]
+}
+
+###
+
+### 4. Approve Draft & Commit to Ledger
+# Replace {id} with the UUID of the review
+POST http://localhost:8080/api/reviews/{id}/approve
+
+###
+
+### 5. Reject & Discard Draft
+# Replace {id} with the UUID of the review
+POST http://localhost:8080/api/reviews/{id}/reject
+
+###
+
