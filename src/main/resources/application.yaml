@@ -9,6 +9,16 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD:botadmin2026}
     driver-class-name: org.postgresql.Driver
   
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+  kafka:
+    bootstrap-servers: 172.29.185.1:9092
+    producer:
+      properties:
+        max.block.ms: 3000 # Fail fast in 3 seconds if broker is unreachable
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:

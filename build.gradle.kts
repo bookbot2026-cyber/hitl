@@ -36,6 +36,7 @@ dependencies {
     implementation("org.flywaydb:flyway-database-postgresql:10.10.0")
 
 	implementation("io.hypersistence:hypersistence-utils-hibernate-71:3.15.3")
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 }
 
 tasks.withType<Test> {
