@@ -1,23 +1,27 @@
 package com.bookbot.hitl.controllers;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/test/kafka")
 public class TestProducerController {
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    public TestProducerController(KafkaTemplate<String, String> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
+    public TestProducerController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @PostMapping("/publish")
     public ResponseEntity<String> publishMockTransaction(@RequestBody String payload) {
-        // Publishes your raw JSON straight to the topic
-        kafkaTemplate.send("DRAFT-TRANSACTION", payload);
-        return ResponseEntity.ok("Successfully sent message to Kafka topic: DRAFT-TRANSACTION");
+        // Publishes your raw JSON straight to the DB queue table
+        jdbcTemplate.update(
+                "INSERT INTO db_queue_messages (topic, payload, status) VALUES (?, ?, 'PENDING')",
+                "DRAFT-TRANSACTION",
+                payload
+        );
+        return ResponseEntity.ok("Successfully sent message to DB queue: DRAFT-TRANSACTION");
     }
 }

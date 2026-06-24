@@ -10,7 +10,7 @@ Content-Type: application/json
   "transactionDate": "2026-06-20",
   "type": "EXPENSE",
   "category": "Food & Dining",
-  "amount": 2650.00,
+  "amount": 2690.00,
   "person": "Social Restaurant 2",
   "splits": [
     { "person": "Self", "amount": 1225.00 },
