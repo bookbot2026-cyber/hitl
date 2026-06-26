@@ -1,20 +1,23 @@
+@host = http://localhost:8080
+# Uncomment the line below and replace with your external GKE Standard Load Balancer IP to test on GCP Cloud
+# @host = http://<GKE_EXTERNAL_IP>
+
 ### GET request to example server
 GET https://examples.http-client.intellij.net/get
     ?generated-in=IntelliJ IDEA
 
-### 1. Ingest a Mock Draft Transaction into Kafka
-POST http://localhost:8080/api/test/kafka/publish
+### 1. Ingest a Mock Draft Transaction
+POST {{host}}/api/test/kafka/publish
 Content-Type: application/json
 
 {
-  "transactionDate": "2026-06-20",
+  "transactionDate": "2026-06-24",
   "type": "EXPENSE",
   "category": "Food & Dining",
-  "amount": 2690.00,
-  "person": "Social Restaurant 2",
+  "amount": 1000.00,
+  "person": "Grocery",
   "splits": [
-    { "person": "Self", "amount": 1225.00 },
-    { "person": "Sameer", "amount": 1225.00 }
+    { "person": "Self", "amount": 1000.00 }
   ],
   "mediaUrl": "https://example.com/receipt.png",
   "mediaType": "IMAGE",
@@ -24,13 +27,13 @@ Content-Type: application/json
 ###
 
 ### 2. Fetch Active Reviews in the Queue
-GET http://localhost:8080/api/reviews
+GET {{host}}/api/reviews
 
 ###
 
 ### 3. Update Review Fields Manually
 # Replace {id} with the UUID of the review from the previous GET request
-PUT http://localhost:8080/api/reviews/42241095-3695-42a8-a00f-0f6f185103fe
+PUT {{host}}/api/reviews/42241095-3695-42a8-a00f-0f6f185103fe
 Content-Type: application/json
 
 {
@@ -49,13 +52,39 @@ Content-Type: application/json
 
 ### 4. Approve Draft & Commit to Ledger
 # Replace {id} with the UUID of the review
-POST http://localhost:8080/api/reviews/42241095-3695-42a8-a00f-0f6f185103fe/approve
+POST {{host}}/api/reviews/a6b9acaf-b869-4324-8ae8-19e537e2ef05/approve
 
 ###
 
 ### 5. Reject & Discard Draft
 # Replace {id} with the UUID of the review
-POST http://localhost:8080/api/reviews/{id}/reject
+POST {{host}}/api/reviews/a6b9acaf-b869-4324-8ae8-19e537e2ef05/reject
 
 ###
+
+
+### =================================================================
+### cURL Commands for GKE Cloud Deployment
+### (Replace <GKE_EXTERNAL_IP> with your cluster's public LoadBalancer IP)
+### =================================================================
+
+# 1. Ingest Mock Draft Transaction to Cloud Queue:
+# curl -X POST http://<GKE_EXTERNAL_IP>/api/test/kafka/publish \
+#   -H "Content-Type: application/json" \
+#   -d '{"transactionDate":"2026-06-24","type":"EXPENSE","category":"Food & Dining","amount":1000.00,"person":"Grocery","splits":[{"person":"Self","amount":1000.00}],"mediaUrl":"https://example.com/receipt.png","mediaType":"IMAGE","rawOcrOrTranscript":"Dinner split 50/50 with Sameer"}'
+
+# 2. Fetch Active Staging Reviews:
+# curl -X GET http://<GKE_EXTERNAL_IP>/api/reviews
+
+# 3. Update Review Fields Manually:
+# curl -X PUT http://<GKE_EXTERNAL_IP>/api/reviews/{id} \
+#   -H "Content-Type: application/json" \
+#   -d '{"transactionDate":"2026-06-20","type":"EXPENSE","category":"Food & Dining","amount":3000.00,"person":"Social Restaurant (Adjusted)","splits":[{"person":"Self","amount":1200.00},{"person":"Sameer","amount":1800.00}]}'
+
+# 4. Approve Draft & Commit to Ledger:
+# curl -X POST http://<GKE_EXTERNAL_IP>/api/reviews/{id}/approve
+
+# 5. Reject & Discard Draft:
+# curl -X POST http://<GKE_EXTERNAL_IP>/api/reviews/{id}/reject
+
 

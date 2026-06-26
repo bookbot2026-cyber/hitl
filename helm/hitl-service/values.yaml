@@ -1,0 +1,16 @@
+replicaCount: 1
+
+image:
+  repository: us-central1-docker.pkg.dev/project-aeb589ed-1b8e-4d61-997/hitl-repo/hitl-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+env:
+  # Supabase Database Staging Configuration
+  dbUrl: "jdbc:postgresql://aws-1-ap-northeast-1.pooler.supabase.com:5432/postgres?sslmode=require"
+  dbUser: "postgres.qwqpnekwdpjlirxcpecx"
+  dbPassword: "botadmin2026"

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hitl-service
+  labels:
+    app: hitl-service
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: hitl-service
+  template:
+    metadata:
+      labels:
+        app: hitl-service
+    spec:
+      serviceAccountName: hitl-service-account
+      containers:
+        - name: hitl-service
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: {{ .Values.env.dbUrl | quote }}
+            - name: SPRING_DATASOURCE_USERNAME
+              value: {{ .Values.env.dbUser | quote }}
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: {{ .Values.env.dbPassword | quote }}
+            - name: JAVA_OPTS
+              value: "-Xmx380m -Xms256m -XX:+UseSerialGC"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+

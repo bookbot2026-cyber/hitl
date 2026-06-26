@@ -1,0 +1,76 @@
+name: Build and Deploy to GKE Standard
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_ID: project-aeb589ed-1b8e-4d61-997
+  PROJECT_NUMBER: '456149968678'
+  GAR_LOCATION: us-central1
+  GAR_REPOSITORY: hitl-repo
+  GKE_CLUSTER: hitl-cluster
+  GKE_ZONE: us-central1-a
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    # Required permissions for Workload Identity Federation (OIDC)
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      # Authenticate to Google Cloud via Workload Identity Federation (OIDC)
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: 'projects/${{ env.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
+          service_account: 'github-deployer@${{ env.PROJECT_ID }}.iam.gserviceaccount.com'
+
+      # Set up Google Cloud SDK CLI
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      # Configure Docker to authenticate against Google Artifact Registry
+      - name: Configure Docker
+        run: |
+          gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev --quiet
+
+      # Build OCI image via Cloud Native Buildpack
+      - name: Build OCI Image with Buildpack
+        run: |
+          ./gradlew bootBuildImage --imageName=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/hitl-service:${{ github.sha }}
+
+      # Push the image to Artifact Registry
+      - name: Push Image to Google Artifact Registry
+        run: |
+          docker push ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/hitl-service:${{ github.sha }}
+
+      # Set up kubectl to point to your GKE Cluster
+      - name: Get GKE Credentials
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_ZONE }}
+
+      # Upgrade or Install the application using Helm
+      - name: Deploy to GKE via Helm
+        run: |
+          helm upgrade --install hitl-service ./helm/hitl-service \
+            --namespace default \
+            --set image.repository=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/hitl-service \
+            --set image.tag=${{ github.sha }} \
+            --set service.type=LoadBalancer
