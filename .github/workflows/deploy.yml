@@ -35,9 +35,9 @@ jobs:
 
       # Run SonarQube Scan only if SONAR_TOKEN secret is configured
       - name: SonarQube Scan
-        if: "${{ secrets.SONAR_TOKEN != '' }}"
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        if: "${{ env.SONAR_TOKEN != '' }}"
         run: |
           ./gradlew sonar \
             -Dsonar.projectKey=bookbot2026-cyber_hitl \
