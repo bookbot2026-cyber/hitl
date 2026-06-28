@@ -7,7 +7,7 @@ GET https://examples.http-client.intellij.net/get
     ?generated-in=IntelliJ IDEA
 
 ### 1. Ingest a Mock Draft Transaction
-POST {{host}}/api/test/kafka/publish
+POST {{host}}/api/test/queue/publish
 Content-Type: application/json
 
 {

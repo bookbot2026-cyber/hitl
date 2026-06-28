@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/test/kafka")
+@RequestMapping("/api/test/queue")
 public class TestProducerController {
 
     private final JdbcTemplate jdbcTemplate;
