@@ -1,10 +1,7 @@
-@host = http://localhost:8080
+# @host = http://localhost:8080
 # Uncomment the line below and replace with your external GKE Standard Load Balancer IP to test on GCP Cloud
-# @host = http://35.202.150.97
+ @host = http://35.202.150.97
 
-### GET request to example server
-GET https://examples.http-client.intellij.net/get
-    ?generated-in=IntelliJ IDEA
 
 ### 1. Ingest a Mock Draft Transaction
 POST {{host}}/api/test/kafka/publish
