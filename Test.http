@@ -1,24 +1,28 @@
-# @host = http://localhost:8080
+#@host = http://localhost:8080
 # Uncomment the line below and replace with your external GKE Standard Load Balancer IP to test on GCP Cloud
  @host = http://35.202.150.97
 
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
 
 ### 1. Ingest a Mock Draft Transaction
 POST {{host}}/api/test/kafka/publish
 Content-Type: application/json
 
 {
-  "transactionDate": "2026-06-24",
+  "transactionDate": "2026-06-28",
   "type": "EXPENSE",
-  "category": "Food & Dining",
-  "amount": 1000.00,
-  "person": "Grocery",
+  "category": "Food & Petrol",
+  "amount": 10000.00,
+  "person": "Sujan",
   "splits": [
-    { "person": "Self", "amount": 1000.00 }
+    { "person": "Self", "amount": 5000.00 },
+    { "person": "Shruthi", "amount": 5000.00 }
   ],
   "mediaUrl": "https://example.com/receipt.png",
   "mediaType": "IMAGE",
-  "rawOcrOrTranscript": "Dinner split 50/50 with Sameer"
+  "rawOcrOrTranscript": "Dinner split 50/50 with Shruthi"
 }
 
 ###
@@ -30,26 +34,29 @@ GET {{host}}/api/reviews
 
 ### 3. Update Review Fields Manually
 # Replace {id} with the UUID of the review from the previous GET request
-PUT {{host}}/api/reviews/42241095-3695-42a8-a00f-0f6f185103fe
+PUT {{host}}/api/reviews/8859b5cd-5af9-4ad9-b2b4-ef256b7253f8
 Content-Type: application/json
 
 {
-  "transactionDate": "2026-06-20",
+  "transactionDate": "2026-06-28",
   "type": "EXPENSE",
-  "category": "Food & Dining",
-  "amount": 3000.00,
-  "person": "Social Restaurant (Adjusted)",
+  "category": "Food & Petrol",
+  "amount": 10000.00,
+  "person": "Sujan",
   "splits": [
-    { "person": "Self", "amount": 1200.00 },
-    { "person": "Sameer", "amount": 1800.00 }
-  ]
+    { "person": "Self", "amount": 5000.00 },
+    { "person": "Shruthi", "amount": 5000.00 }
+  ],
+  "mediaUrl": "https://example.com/receipt.png",
+  "mediaType": "IMAGE",
+  "rawOcrOrTranscript": "Dinner split 50/50 with Shruthi Ranganatha"
 }
 
 ###
 
 ### 4. Approve Draft & Commit to Ledger
 # Replace {id} with the UUID of the review
-POST {{host}}/api/reviews/a6b9acaf-b869-4324-8ae8-19e537e2ef05/approve
+POST {{host}}/api/reviews/8859b5cd-5af9-4ad9-b2b4-ef256b7253f8/approve
 
 ###
 
