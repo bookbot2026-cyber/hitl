@@ -33,6 +33,17 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
+      # Run SonarQube Scan only if SONAR_TOKEN secret is configured
+      - name: SonarQube Scan
+        if: "${{ secrets.SONAR_TOKEN != '' }}"
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          ./gradlew sonar \
+            -Dsonar.projectKey=bookbot2026-cyber_hitl \
+            -Dsonar.organization=bookbot2026-cyber \
+            -Dsonar.host.url=https://sonarcloud.io
+
       # Authenticate to Google Cloud via Workload Identity Federation (OIDC)
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
