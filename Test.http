@@ -1,6 +1,6 @@
 @host = http://localhost:8080
 # Uncomment the line below and replace with your external GKE Standard Load Balancer IP to test on GCP Cloud
-# @host = http://<GKE_EXTERNAL_IP>
+# @host = http://35.202.150.97
 
 ### GET request to example server
 GET https://examples.http-client.intellij.net/get
